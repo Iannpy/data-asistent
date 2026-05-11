@@ -519,7 +519,7 @@ class TestSecurityIntegration:
         ]
 
         for code in blocked_codes:
-            is_safe, violations = scanner.scan_code(code)
+            is_safe, violations = scanner.scan(code)
             assert not is_safe, f"Code should be blocked: {code}"
             assert len(violations) > 0
 
@@ -539,7 +539,7 @@ class TestSecurityIntegration:
         ]
 
         for code in safe_codes:
-            is_safe, _ = scanner.scan_code(code)
+            is_safe, _ = scanner.scan(code)
             assert is_safe, f"Code should be safe: {code}"
 
 
