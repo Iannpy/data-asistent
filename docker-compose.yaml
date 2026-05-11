@@ -1,0 +1,58 @@
+version: "3.8"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: data-agent-api
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      - KERNEL_CONTAINER=kernel
+    volumes:
+      - ./src:/app/src:ro
+      - datasets:/data:ro
+    depends_on:
+      - kernel
+      - ollama
+    networks:
+      - data-agent-net
+    command: ["uvicorn", "src.api:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  kernel:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: data-agent-kernel
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./src:/app/src:ro
+      - datasets:/data:ro
+    networks:
+      - data-agent-net
+    command: ["python", "-m", "jupyter", "kernelgateway", "--KernelGatewayApp.ip=0.0.0.0"]
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: data-agent-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - data-agent-net
+
+volumes:
+  datasets:
+    driver: local
+  ollama-data:
+    driver: local
+
+networks:
+  data-agent-net:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: br-data-agent
