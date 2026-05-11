@@ -1,0 +1,49 @@
+# Propuesta de Arquitectura de Agentes para Analítica de Datos y Machine Learning
+
+Este documento propone una arquitectura de agentes inspirada en el enfoque de **Spec-Driven Development (SDD)** del repositorio `Gentleman-Programming/gentle-ai` [1], pero adaptada para el dominio de la **Analítica de Datos y Machine Learning (ML)**. La idea central es modularizar el proceso de ciencia de datos en sub-agentes especializados, cada uno encargado de una etapa específica del flujo de trabajo.
+
+## Principios de Diseño
+
+La arquitectura se basará en los siguientes principios, análogos a los observados en `gentle-ai`:
+
+- **Modularidad**: Cada etapa del pipeline de ML será un sub-agente independiente con responsabilidades claras.
+- **Orquestación**: Un agente orquestador principal coordinará la ejecución de los sub-agentes, pasando los resultados de una etapa a la siguiente.
+- **Memoria Persistente (Engram)**: Los agentes mantendrán un registro de decisiones, resultados intermedios y configuraciones, similar al concepto de `Engram` en `gentle-ai`, para asegurar la reproducibilidad y facilitar la depuración.
+- **Habilidades (Skills)**: Cada sub-agente tendrá un conjunto de habilidades específicas para su dominio, que pueden ser invocadas según sea necesario.
+- **Configuración por Fase**: Se permitirá asignar diferentes modelos o configuraciones a cada sub-agente, optimizando el uso de recursos y la eficiencia, similar a los "OpenCode SDD Profiles" [1].
+
+## Arquitectura de Sub-Agentes
+
+El pipeline de Analítica de Datos y Machine Learning se descompondrá en los siguientes sub-agentes especializados:
+
+| ID de Agente | Nombre del Agente | Responsabilidades Principales | Habilidades Clave (Skills) |
+| :--- | :--- | :--- | :--- |
+| **DA-01** | **Explorador de Datos (EDA)** | Análisis exploratorio, detección de valores atípicos, correlaciones y visualización inicial. | `data-viz`, `stat-analysis`, `outlier-detection` |
+| **DA-02** | **Ingeniero de Limpieza** | Tratamiento de datos faltantes, normalización, codificación de variables categóricas y limpieza de ruido. | `data-imputation`, `feature-scaling`, `regex-cleaning` |
+| **DA-03** | **Arquitecto de Características** | Ingeniería de variables (Feature Engineering), selección de características y reducción de dimensionalidad. | `feature-extraction`, `pca-analysis`, `feature-selection` |
+| **DA-04** | **Modelador de ML** | Selección de algoritmos, entrenamiento de modelos y ajuste de hiperparámetros. | `hyperopt`, `cross-validation`, `model-selection` |
+| **DA-05** | **Evaluador de Rendimiento** | Validación cruzada, métricas de error (RMSE, F1-Score, etc.) y análisis de sesgo/varianza. | `metrics-reporting`, `error-analysis`, `bias-detection` |
+| **DA-06** | **Intérprete de Modelos** | Explicabilidad del modelo (SHAP, LIME), importancia de variables y generación de insights de negocio. | `shap-values`, `lime-explanation`, `insight-generation` |
+
+## Flujo de Trabajo Orquestado
+
+A diferencia del SDD tradicional para programación, este flujo se centra en la iteración sobre los datos:
+
+1.  **Fase de Definición (Orquestador)**: El usuario define el objetivo (ej. "Predecir la fuga de clientes"). El orquestador inicializa el contexto y la memoria persistente.
+2.  **Fase de Exploración (DA-01)**: Se analizan los datos crudos. Si los datos son insuficientes, el agente informa al orquestador para solicitar más fuentes.
+3.  **Fase de Preparación (DA-02 & DA-03)**: Los datos se limpian y se transforman. El "Engram" guarda cada transformación para que pueda ser replicada en producción.
+4.  **Fase de Modelado (DA-04)**: Se prueban múltiples arquitecturas. Se pueden usar perfiles de modelo (ej. un modelo ligero para pruebas rápidas y uno pesado para el entrenamiento final).
+5.  **Fase de Validación e Interpretación (DA-05 & DA-06)**: Se valida el modelo y se explica por qué toma ciertas decisiones.
+6.  **Fase de Despliegue/Reporte**: El orquestador genera un informe final o un script de inferencia listo para usar.
+
+## Implementación Técnica Sugerida
+
+Para implementar esto siguiendo el estilo de `gentle-ai`:
+
+- **CLI/TUI**: Una herramienta en Go o Python que permita lanzar el pipeline con comandos como `data-agent run --goal "prediccion_ventas"`.
+- **Integración con OpenCode**: Crear perfiles específicos en `config.json` donde cada fase (EDA, Cleaning, Modeling) apunte a un sub-agente con un prompt de sistema especializado.
+- **Uso de MCP (Model Context Protocol)**: Implementar servidores MCP para que los agentes puedan ejecutar código Python de forma segura, acceder a bases de datos SQL y generar gráficos automáticamente.
+
+## Referencias
+
+[1] [Gentleman-Programming/gentle-ai](https://github.com/Gentleman-Programming/gentle-ai) - Ecosistema y frameworks para agentes de IA.

@@ -1,0 +1,45 @@
+# OpenSpec Configuration - data-asistent
+schema: spec-driven
+
+context: |
+  Tech stack: No definido aún (proyecto nuevo)
+  Architecture: Propuesta de arquitectura de agentes para analítica de datos y ML (data-asistent-propose)
+  Testing: No hay test runner detectado (proyecto vacío)
+  Style: Por definir
+
+strict_tdd: false
+
+rules:
+  proposal:
+    - Incluir plan de rollback para cambios riesgosos
+    - Identificar módulos/paquetes afectados
+  specs:
+    - Usar formato Given/When/Then para escenarios
+    - Usar keywords RFC 2119 (MUST, SHALL, SHOULD, MAY)
+  design:
+    - Incluir diagramas de secuencia para flujos complejos
+    - Documentar decisiones de arquitectura con racional
+  tasks:
+    - Agrupar por fase (infraestructura, implementación, testing)
+    - Usar numeración jerárquica (1.1, 1.2, etc.)
+    - Mantener tareas pequeñas para completar en una sesión
+  apply:
+    - Seguir patrones de código existentes y convenciones del proyecto
+  verify:
+    - Ejecutar tests si existe infraestructura de testing
+    - Comparar implementación contra cada escenario del spec
+  archive:
+    - Advertir antes de merging deltas destructivas (eliminaciones grandes)
+
+testing:
+  strict_tdd: false
+  test_runner: null
+  test_layers:
+    unit: false
+    integration: false
+    e2e: false
+  coverage: false
+  quality_tools:
+    linter: false
+    type_checker: false
+    formatter: false
