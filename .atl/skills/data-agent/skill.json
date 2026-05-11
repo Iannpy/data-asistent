@@ -1,0 +1,125 @@
+{
+  "name": "data-agent",
+  "description": "Agente de análisis de datos que traduce consultas en lenguaje natural a código Pandas y las ejecuta en un sandbox Docker. Permite explorar, analizar y visualizar datasets sin escribir código manualmente.",
+  "triggers": [
+    "analiza",
+    "consulta",
+    "explora",
+    "visualiza",
+    "query数据分析",
+    "data analysis",
+    "analyze data",
+    "explorar datos",
+    "generar gráfico"
+  ],
+  "actions": [
+    {
+      "name": "execute_query",
+      "description": "Ejecuta una consulta en lenguaje natural sobre un dataset",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Consulta en lenguaje natural (e.g., '¿cuántas filas tiene?', 'promedio de edad por género')"
+          },
+          "dataset_path": {
+            "type": "string",
+            "description": "Ruta al archivo CSV o Parquet"
+          }
+        },
+        "required": ["query", "dataset_path"]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "result": { "type": "object" },
+          "execution_time_ms": { "type": "integer" }
+        }
+      }
+    },
+    {
+      "name": "execute_visualization",
+      "description": "Genera una visualización (gráfico) a partir de una especificación en lenguaje natural",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Especificación del gráfico (e.g., 'histograma de precios', 'scatter plot edad vs ingreso')"
+          },
+          "dataset_path": {
+            "type": "string",
+            "description": "Ruta al archivo CSV o Parquet"
+          }
+        },
+        "required": ["query", "dataset_path"]
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "image_base64": { "type": "string" },
+          "chart_type": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "list_datasets",
+      "description": "Lista los datasets disponibles en un directorio",
+      "input_schema": {
+        "type": "object",
+        "properties": {
+          "directory": {
+            "type": "string",
+            "description": "Directorio a explorar (opcional, por defecto usa el configurado)"
+          }
+        }
+      },
+      "output_schema": {
+        "type": "object",
+        "properties": {
+          "datasets": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "path": { "type": "string" },
+                "size_bytes": { "type": "integer" },
+                "row_count": { "type": "integer" }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "metadata": {
+    "version": "1.0.0",
+    "author": "gentleman-programming",
+    "type": "sdds-agent",
+    "language": "es",
+    "category": "data-analysis",
+    "dependencies": {
+      "llm_provider": "ollama",
+      "runtime": "docker-jupyter-kernel"
+    },
+    "limits": {
+      "max_execution_time_seconds": 60,
+      "max_memory_mb": 512,
+      "max_rows_per_query": 1000
+    },
+    "security": {
+      "sandbox_mode": "docker",
+      "blocked_apis": ["os", "subprocess", "socket", "requests", "urllib"]
+    }
+  },
+  "integration": {
+    "opencode_version": ">=1.0.0",
+    "sdd_change": "data-agent-python-native",
+    "pr_number": 3,
+    "phase": "apply"
+  }
+}

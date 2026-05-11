@@ -4,6 +4,12 @@
 
 See `_shared/skill-resolver.md` for the full resolution protocol.
 
+## Project Skills
+
+| Trigger | Skill | Path |
+|---------|-------|------|
+| analiza, consulta, explora, visualiza + dataset | data-agent | .atl/skills/data-agent/ |
+
 ## User Skills
 
 | Trigger | Skill | Path |
@@ -84,6 +90,16 @@ Pre-digested rules per skill. Delegators copy matching blocks into sub-agent pro
 - Check for edge cases and regression risks
 - Require confidence > 0.8 before marking as resolved
 - Document the verdict and reasoning for future reference
+
+## Compact Rules
+
+### data-agent
+- Activar con triggers: "analiza", "consulta", "explora", "visualiza" + dataset
+- Ejecutar consultas NL → código Pandas → resultado formateado
+- Generar visualizaciones (matplotlib/seaborn/plotly) → Base64 PNG
+- Siempre validar dataset_path antes de ejecutar
+- Usar sandbox Docker: APIs bloqueadas (os, subprocess, socket)
+- Timeout: 60s, Max rows: 1000
 
 ## Project Conventions
 
